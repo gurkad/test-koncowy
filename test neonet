@@ -1,0 +1,95 @@
+import unittest
+import time
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+
+
+class SearchText(unittest.TestCase):
+
+    def setUp(self):
+        self.driver = webdriver.Chrome()
+        # Podajemy url sklepu
+        self.driver.get("https://www.neonet.pl/?cd=146942385&ad=8241691305&kd=neo%20net&gclid=CjwKCAjwsvujBhAXEiwA_UXnAIBOXmShXmxpdD2aBpyNUSyONDEASeHtXfekHy5u0gE2zEVK-auRshoCXMcQAvD_BwE")
+        # Musimy zwiekszyc wielkosc zeby strona nie wyswietlaal sie w trybie dla urzadzen mobilnych
+        self.driver.set_window_size(1920, 1080, self.driver.window_handles[0])
+
+    def testaddToBasket(self):
+        # Korzystamy z xpath ze wzgledu na unikatowosc
+        self.pathToAcceptCookies = """/html/body/div/main/div[1]/div[3]/div/div/div[2]/button[1]"""
+        # Wybieramy element strony
+        self.accepCookiestButton = self.driver.find_element(By.XPATH, self.pathToAcceptCookies)
+        # Klikamy wybrany element w celu potwierdzenia
+        self.accepCookiestButton.click()
+
+        self.pathSearchInput = """//*[@id="mainContainer"]/header/section/div/div/div/form/label/input"""
+
+        self.pathSearchButton = """//*[@id="mainContainer"]/header/section/div/div/div/form/button"""
+        self.search_input = self.driver.find_element(By.XPATH, self.pathSearchInput)
+
+        self.search_input.click()
+        self.search_input.send_keys('SONY Konsola PS5 + Call of Duty Modern Warfare 2');
+
+        self.search_btn = self.driver.find_element(By.XPATH, self.pathSearchButton)
+        self.search_btn.click()
+
+        time.sleep(5)
+        self.pathButtonAddToBasket = """//*[@id="mainColumn"]/section[1]/section/section[1]/div[2]/section/section/button"""
+        self.buttonAddToBasket = self.driver.find_element(By.XPATH, self.pathButtonAddToBasket);
+        self.buttonAddToBasket.click()
+        time.sleep(5)
+
+        self.pathtoBuyOnline = """//*[@id="search"]/div[2]/div/div/div/div[4]/ul/li[1]/div/div[2]/div/div[2]/button"""
+        try:
+            self.buyOnlineButton = self.driver.find_element(By.XPATH,self.pathtoBuyOnline)
+            self.buyOnlineButton.click()
+        except:
+            print("Buy online Insurance nie istnieje ")
+        time.sleep(5)
+        self.pathToCloseOrderWindows = """//*[@id="search"]/div[2]/div/div/div/div[1]/button"""
+        try:
+            self.closeOrderWindowButton = self.driver.find_element(By.XPATH, self.pathToCloseOrderWindows)
+            self.closeOrderWindowButton.click()
+            self.buttonAddToBasket.click()
+        except:
+            print("Close order window Insurance nie istnieje ")
+
+
+        self.pathToConfirmInsurance = """//*[@id="search"]/div[2]/div/div/article/section[2]/button[2]"""
+
+        try:
+            self.confirmInsuranceButton = self.driver.find_element(By.XPATH, self.pathToConfirmInsurance)
+            self.confirmInsuranceButton.click()
+        except:
+            print("Confirm Insurance nie istnieje ")
+
+        self.pathToGoToBasket = """//*[@id="productAccessories"]/div/div[2]/div[2]/button"""
+        try:
+            self.goToBasketButton = self.driver.find_element(By.XPATH, self.pathToGoToBasket)
+            self.goToBasketButton.click()
+        except:
+            print("Go to basket nie istnieje ")
+
+        time.sleep(5)
+        self.pathMoveFormward = """//*[@id="search"]/div[2]/div/div/div/div[2]/button[2]"""
+
+        try:
+            self.buttonMoveForward = self.driver.find_element(By.XPATH, self.pathMoveFormward)
+            self.buttonMoveForward.click()
+        except:
+            print("Mobve forward nie istnieje ")
+        time.sleep(5)
+
+        self.pathTocounter = """//*[@id="root"]/aside/ul/li/div[3]/div[2]/input"""
+        self.counterInput = self.driver.find_element(By.XPATH, self.pathTocounter)
+
+        self.valueofCounter = self.counterInput.get_attribute("value")
+        self.assertEqual( "1" , self.valueofCounter)
+
+    def tearDown(self):
+        # close the browser window
+        self.driver.quit()
+
+
+if __name__ == '__main__':
+    unittest.main()
